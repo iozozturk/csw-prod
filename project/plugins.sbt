@@ -13,6 +13,7 @@ addSbtPlugin("com.typesafe.sbt"                  % "sbt-native-packager"    % "1
 addSbtPlugin("com.typesafe.sbt"                  % "sbt-multi-jvm"          % "0.4.0")
 addSbtPlugin("com.eed3si9n"                      % "sbt-buildinfo"          % "0.7.0")
 addSbtPlugin("pl.project13.scala"                % "sbt-jmh"                % "0.3.0")
+addSbtPlugin("org.scala-js"                      % "sbt-scalajs"            % "0.6.21")
 
 addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0")
 classpathTypes += "maven-plugin"

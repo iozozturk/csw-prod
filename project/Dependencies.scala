@@ -1,6 +1,15 @@
 import sbt._
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Dependencies {
+
+  val Shared = Def.setting(
+    // XXX FIXME: How to reuse this info for both Scala and ScalaJS using "%%%"?
+    Seq(
+      "com.typesafe.play" %%% "play-json"  % Libs.PlayJsonVersion,
+      "com.beachape"      %%% "enumeratum" % Enumeratum.version
+    )
+  )
 
   val Messages = Seq(
     Libs.`scala-java8-compat`,

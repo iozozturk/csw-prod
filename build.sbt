@@ -36,13 +36,28 @@ lazy val unidocExclusions: Seq[ProjectReference] = Seq(
 //Root project
 lazy val `csw-prod` = project
   .in(file("."))
-  .enablePlugins(UnidocSite, PublishGithub, GitBranchPrompt)
+  .settings(Common.commonSettings)
+  .enablePlugins(UnidocSite, PublishGithub, GitBranchPrompt, ScalaJSPlugin)
   .aggregate(aggregatedProjects: _*)
   .settings(Settings.mergeSiteWith(docs))
   .settings(Settings.docExclusions(unidocExclusions))
 
+
+// contains simple case classes used for data transfer that are shared between the client and server
+lazy val `csw-shared` = (crossProject.crossType(CrossType.Pure) in file("csw-shared"))
+  .settings(Common.commonSettings)
+  .settings(
+    libraryDependencies ++= Dependencies.Shared.value
+  )
+
+lazy val `csw-shared-Jvm` = `csw-shared`.jvm
+
+lazy val `csw-shared-Js` = `csw-shared`.js
+
 lazy val `csw-messages` = project
+  .settings(Common.projectSettings)
   .enablePlugins(PublishBintray, GenJavadocPlugin)
+    .dependsOn(`csw-shared-Jvm`)
   .settings(
     libraryDependencies ++= Dependencies.Messages
   )
@@ -55,12 +70,14 @@ lazy val `csw-messages` = project
   )
 
 lazy val `csw-logging-macros` = project
+  .settings(Common.projectSettings)
   .settings(
     libraryDependencies += Libs.`scala-reflect`
   )
 
 //Logging service
 lazy val `csw-logging` = project
+  .settings(Common.projectSettings)
   .dependsOn(`csw-logging-macros`, `csw-messages`)
   .enablePlugins(PublishBintray, GenJavadocPlugin, MaybeCoverage)
   .settings(
@@ -69,6 +86,7 @@ lazy val `csw-logging` = project
 
 //Location service related projects
 lazy val `csw-location` = project
+  .settings(Common.projectSettings)
   .dependsOn(`csw-logging`, `csw-messages`)
   .enablePlugins(PublishBintray, GenJavadocPlugin, AutoMultiJvm, MaybeCoverage)
   .settings(
@@ -77,6 +95,7 @@ lazy val `csw-location` = project
 
 //Cluster seed
 lazy val `csw-cluster-seed` = project
+  .settings(Common.projectSettings)
   .dependsOn(
     `csw-messages`,
     `csw-location`,
@@ -90,6 +109,7 @@ lazy val `csw-cluster-seed` = project
   )
 
 lazy val `csw-location-agent` = project
+  .settings(Common.projectSettings)
   .dependsOn(`csw-location`)
   .enablePlugins(DeployApp, MaybeCoverage)
   .settings(
@@ -98,12 +118,14 @@ lazy val `csw-location-agent` = project
 
 //Config service related projects
 lazy val `csw-config-api` = project
+  .settings(Common.projectSettings)
   .enablePlugins(GenJavadocPlugin, MaybeCoverage)
   .settings(
     libraryDependencies ++= Dependencies.ConfigApi
   )
 
 lazy val `csw-config-server` = project
+  .settings(Common.projectSettings)
   .dependsOn(`csw-location`, `csw-config-api`, `csw-commons`)
   .enablePlugins(DeployApp, MaybeCoverage)
   .settings(
@@ -111,6 +133,7 @@ lazy val `csw-config-server` = project
   )
 
 lazy val `csw-config-client` = project
+  .settings(Common.projectSettings)
   .dependsOn(
     `csw-config-api`,
     `csw-commons`,
@@ -123,6 +146,7 @@ lazy val `csw-config-client` = project
   )
 
 lazy val `csw-config-client-cli` = project
+  .settings(Common.projectSettings)
   .dependsOn(
     `csw-config-client`,
     `csw-config-server` % "test->test",
@@ -134,6 +158,7 @@ lazy val `csw-config-client-cli` = project
   )
 
 lazy val `csw-vslice` = project
+  .settings(Common.projectSettings)
   .dependsOn(
     `csw-framework`,
     `csw-command`
@@ -141,6 +166,7 @@ lazy val `csw-vslice` = project
   .enablePlugins(DeployApp)
 
 lazy val `csw-framework` = project
+  .settings(Common.projectSettings)
   .dependsOn(
     `csw-messages`,
     `csw-config-client`,
@@ -155,6 +181,7 @@ lazy val `csw-framework` = project
   )
 
 lazy val `csw-command` = project
+  .settings(Common.projectSettings)
   .dependsOn(
     `csw-messages`,
     `csw-logging`
@@ -163,12 +190,14 @@ lazy val `csw-command` = project
   .settings(libraryDependencies ++= Dependencies.CswCommand)
 
 lazy val `csw-commons` = project
+  .settings(Common.projectSettings)
   .enablePlugins(PublishBintray, GenJavadocPlugin)
   .settings(
     libraryDependencies ++= Dependencies.CswCommons
   )
 
 lazy val `csw-benchmark` = project
+  .settings(Common.projectSettings)
   .dependsOn(
     `csw-logging`,
     `csw-messages`,
@@ -182,6 +211,7 @@ lazy val `csw-benchmark` = project
 
 //Integration test project
 lazy val integration = project
+  .settings(Common.projectSettings)
   .dependsOn(`csw-location`, `csw-location-agent`)
   .enablePlugins(DeployApp)
   .settings(
@@ -190,9 +220,11 @@ lazy val integration = project
 
 //Docs project
 lazy val docs = project.enablePlugins(ParadoxSite, NoPublish)
+  .settings(Common.projectSettings)
 
 //Example code
 lazy val examples = project
+  .settings(Common.projectSettings)
   .dependsOn(`csw-location`, `csw-config-client`, `csw-config-server` % "test->test", `csw-logging`, `csw-messages`)
   .enablePlugins(DeployApp)
   .settings(
