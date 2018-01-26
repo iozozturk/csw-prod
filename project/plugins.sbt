@@ -18,7 +18,7 @@ addSbtPlugin("org.scala-js"                      % "sbt-scalajs"            % "0
 addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0")
 classpathTypes += "maven-plugin"
 
-libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.7.0-rc6"
+libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin-shaded" % "0.7.0-rc6"
 
 scalacOptions ++= Seq(
   "-encoding",

@@ -47,8 +47,14 @@ lazy val `csw-prod` = project
 lazy val `csw-shared` = (crossProject.crossType(CrossType.Pure) in file("csw-shared"))
   .settings(Common.commonSettings)
   .settings(
-    libraryDependencies ++= Dependencies.Shared.value
+    libraryDependencies ++= Dependencies.Shared.value,
+    Common.detectCycles := false,
+    PB.targets in Compile := Seq(
+      PB.gens.java                        -> (sourceManaged in Compile).value,
+      scalapb.gen(javaConversions = false) -> (sourceManaged in Compile).value
+    )
   )
+
 
 lazy val `csw-shared-Jvm` = `csw-shared`.jvm
 
@@ -57,7 +63,7 @@ lazy val `csw-shared-Js` = `csw-shared`.js
 lazy val `csw-messages` = project
   .settings(Common.projectSettings)
   .enablePlugins(PublishBintray, GenJavadocPlugin)
-    .dependsOn(`csw-shared-Jvm`)
+  .dependsOn(`csw-shared-Jvm`)
   .settings(
     libraryDependencies ++= Dependencies.Messages
   )

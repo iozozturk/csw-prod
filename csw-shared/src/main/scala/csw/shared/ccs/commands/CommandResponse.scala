@@ -1,9 +1,9 @@
 package csw.shared.ccs.commands
 
-import akka.NotUsed
-import akka.stream.Materializer
-import akka.stream.scaladsl.Source
-import akka.typed.ActorRef
+//import akka.NotUsed
+//import akka.stream.Materializer
+//import akka.stream.scaladsl.Source
+//import akka.typed.ActorRef
 import csw.shared.TMTSerializable
 import csw.shared.ccs.CommandIssue
 import csw.shared.ccs.commands.CommandResultType.{Intermediate, Negative, Positive}
@@ -21,16 +21,16 @@ sealed abstract class CommandResponse(val resultType: CommandResultType) extends
 }
 
 object CommandResponse {
-  case class Accepted(runId: RunId)                             extends CommandResponse(Intermediate)
-  case class Invalid(runId: RunId, issue: CommandIssue)         extends CommandResponse(Negative)
-  case class CompletedWithResult(runId: RunId, result: Result)  extends CommandResponse(Positive)
-  case class Completed(runId: RunId)                            extends CommandResponse(Positive)
-  case class BehaviorChanged[T](runId: RunId, ref: ActorRef[T]) extends CommandResponse(Positive)
-  case class NoLongerValid(runId: RunId, issue: CommandIssue)   extends CommandResponse(Negative)
-  case class Error(runId: RunId, message: String)               extends CommandResponse(Negative)
-  case class Cancelled(runId: RunId)                            extends CommandResponse(Negative)
-  case class CommandNotAvailable(runId: RunId)                  extends CommandResponse(Negative)
-  case class NotAllowed(runId: RunId, issue: CommandIssue)      extends CommandResponse(Negative)
+  case class Accepted(runId: RunId)                            extends CommandResponse(Intermediate)
+  case class Invalid(runId: RunId, issue: CommandIssue)        extends CommandResponse(Negative)
+  case class CompletedWithResult(runId: RunId, result: Result) extends CommandResponse(Positive)
+  case class Completed(runId: RunId)                           extends CommandResponse(Positive)
+//  case class BehaviorChanged[T](runId: RunId, ref: ActorRef[T]) extends CommandResponse(Positive)
+  case class NoLongerValid(runId: RunId, issue: CommandIssue) extends CommandResponse(Negative)
+  case class Error(runId: RunId, message: String)             extends CommandResponse(Negative)
+  case class Cancelled(runId: RunId)                          extends CommandResponse(Negative)
+  case class CommandNotAvailable(runId: RunId)                extends CommandResponse(Negative)
+  case class NotAllowed(runId: RunId, issue: CommandIssue)    extends CommandResponse(Negative)
 
   /**
    * Transform a given CommandResponse to a response with the provided RunId
@@ -43,7 +43,7 @@ object CommandResponse {
     case invalid: Invalid                         ⇒ invalid.copy(runId = id)
     case completedWithResult: CompletedWithResult ⇒ completedWithResult.copy(runId = id)
     case completed: Completed                     ⇒ completed.copy(runId = id)
-    case behaviorChanged: BehaviorChanged[t]      ⇒ behaviorChanged.copy(runId = id)
+//    case behaviorChanged: BehaviorChanged[t]      ⇒ behaviorChanged.copy(runId = id)
     case noLongerValid: NoLongerValid             ⇒ noLongerValid.copy(runId = id)
     case error: Error                             ⇒ error.copy(runId = id)
     case cancelled: Cancelled                     ⇒ cancelled.copy(runId = id)
@@ -51,24 +51,24 @@ object CommandResponse {
     case notAllowed: NotAllowed                   ⇒ notAllowed.copy(runId = id)
   }
 
-  /**
-   * Creates an aggregate response from a stream of CommandResponse.
-   * @param commandResponses a source of stream of CommandResponse
-   * @return
-   */
-  def aggregateResponse(
-      commandResponses: Source[CommandResponse, NotUsed]
-  )(implicit ec: ExecutionContext, mat: Materializer): Future[CommandResponse] = {
-    commandResponses
-      .runForeach { x ⇒
-        if (x.resultType == CommandResultType.Negative)
-          throw new RuntimeException(s"Command with runId [${x.runId}] failed with response [$x]")
-      }
-      .transform {
-        case Success(_)  ⇒ Success(CommandResponse.Completed(RunId()))
-        case Failure(ex) ⇒ Success(CommandResponse.Error(RunId(), s"${ex.getMessage}"))
-      }
-  }
+//  /**
+//   * Creates an aggregate response from a stream of CommandResponse.
+//   * @param commandResponses a source of stream of CommandResponse
+//   * @return
+//   */
+//  def aggregateResponse(
+//      commandResponses: Source[CommandResponse, NotUsed]
+//  )(implicit ec: ExecutionContext, mat: Materializer): Future[CommandResponse] = {
+//    commandResponses
+//      .runForeach { x ⇒
+//        if (x.resultType == CommandResultType.Negative)
+//          throw new RuntimeException(s"Command with runId [${x.runId}] failed with response [$x]")
+//      }
+//      .transform {
+//        case Success(_)  ⇒ Success(CommandResponse.Completed(RunId()))
+//        case Failure(ex) ⇒ Success(CommandResponse.Error(RunId(), s"${ex.getMessage}"))
+//      }
+//  }
 }
 
 /**

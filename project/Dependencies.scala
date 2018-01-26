@@ -1,13 +1,15 @@
 import sbt._
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import scalapb.compiler.Version.scalapbVersion
 
 object Dependencies {
 
   val Shared = Def.setting(
-    // XXX FIXME: How to reuse this info for both Scala and ScalaJS using "%%%"?
+    // XXX FIXME: How to reuse this info for both Scala and ScalaJS using "%%%" instead of "%%"?
     Seq(
-      "com.typesafe.play" %%% "play-json"  % Libs.PlayJsonVersion,
-      "com.beachape"      %%% "enumeratum" % Enumeratum.version
+      "com.typesafe.play"    %%% "play-json"       % Libs.PlayJsonVersion,
+      "com.beachape"         %%% "enumeratum"      % Enumeratum.version,
+      "com.thesamet.scalapb" %%% "scalapb-runtime" % scalapbVersion % "protobuf"
     )
   )
 

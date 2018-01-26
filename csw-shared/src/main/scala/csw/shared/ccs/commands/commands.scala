@@ -5,7 +5,7 @@ import java.util.Optional
 import csw.shared.params.generics.{Parameter, ParameterSetType}
 import csw.shared.params.models.{ObsId, Prefix, RunId}
 
-import scala.compat.java8.OptionConverters.{RichOptionForJava8, RichOptionalGeneric}
+//import scala.compat.java8.OptionConverters.{RichOptionForJava8, RichOptionalGeneric}
 
 /**
  * Common trait for Setup, Observe and Wait commands
@@ -38,7 +38,7 @@ sealed trait Command { self: ParameterSetType[_] ⇒
   val commandName: CommandName
 
   val maybeObsId: Option[ObsId]
-  def jMaybeObsId: Optional[ObsId] = maybeObsId.asJava
+//  def jMaybeObsId: Optional[ObsId] = maybeObsId.asJava
 }
 
 /**
@@ -69,8 +69,8 @@ case class Setup private (
     with SequenceCommand
     with ControlCommand {
 
-  def this(source: Prefix, commandName: CommandName, maybeObsId: Optional[ObsId]) =
-    this(RunId(), source, commandName, maybeObsId.asScala, Set.empty)
+//  def this(source: Prefix, commandName: CommandName, maybeObsId: Optional[ObsId]) =
+//    this(RunId(), source, commandName, maybeObsId.asScala, Set.empty)
 
   override protected def create(data: Set[Parameter[_]]): Setup = copy(paramSet = data)
 }
@@ -110,8 +110,8 @@ case class Observe private (
     with SequenceCommand
     with ControlCommand {
 
-  def this(source: Prefix, commandName: CommandName, maybeObsId: Optional[ObsId]) =
-    this(RunId(), source, commandName, maybeObsId.asScala, Set.empty)
+//  def this(source: Prefix, commandName: CommandName, maybeObsId: Optional[ObsId]) =
+//    this(RunId(), source, commandName, maybeObsId.asScala, Set.empty)
 
   override protected def create(data: Set[Parameter[_]]): Observe = copy(paramSet = data)
 }
@@ -148,8 +148,8 @@ case class Wait private (
 ) extends ParameterSetType[Wait]
     with SequenceCommand {
 
-  def this(source: Prefix, commandName: CommandName, maybeObsId: Optional[ObsId]) =
-    this(RunId(), source, commandName, maybeObsId.asScala, Set.empty)
+//  def this(source: Prefix, commandName: CommandName, maybeObsId: Optional[ObsId]) =
+//    this(RunId(), source, commandName, maybeObsId.asScala, Set.empty)
 
   override protected def create(data: Set[Parameter[_]]): Wait = copy(paramSet = data)
 }
